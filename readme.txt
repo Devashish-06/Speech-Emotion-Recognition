@@ -1,0 +1,2 @@
+->Install flask - pip install flask
+->To run flask - run

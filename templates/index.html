@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Speech Emotion Classifier | Record</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Latest compiled and minified Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+  </head>
+  <body>
+    <h1>Speech Emotion Recognition Using Machine Learning</h1>
+    <h2>Enter Your Audio Here</h2>
+    <div id="controls">
+      <button id="recordButton">Record</button>
+      <button id="pauseButton" disabled>Pause</button>
+      <button id="stopButton" disabled>Stop</button>
+    </div>
+    <div>
+      <p1><strong>Upload Audio File:</strong></p1>
+      <input type="file" id="audioFileInput" accept=".mp3, .wav" />
+      <!-- Add accept attribute to restrict file types if needed -->
+    </div>
+    <div id="formats"></div>
+    <p2><strong>Recordings:</strong></p2>
+    <ol id="recordingsList" class="center"></ol>
+
+    <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+
+    <h1 id="predicted_emotion"></h1>
+
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+    <script src="static/js/script.js"></script>
+    <script>
+      let latestMessage = "";
+      const ws = new WebSocket("ws://192.168.5.94:8080");
+
+      ws.onmessage = function (event) {
+        console.log("Message received");
+        const blob = event.data;
+        const reader = new FileReader();
+
+        reader.onload = function () {
+          latestMessage = reader.result;
+        };
+
+        reader.readAsText(blob);
+      };
+
+      function revealMessage() {
+        const messageDiv = document.getElementById("predicted_emotion");
+        messageDiv.textContent = latestMessage;
+        latestMessage = ""; // Optionally clear the latest message after revealing
+      }
+    </script>
+  </body>
+</html>
